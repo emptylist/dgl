@@ -3,16 +3,83 @@
 #include <vector>
 #include <cmath>
 
-static const float coeffG = 10; // Note Gravity is actually a spring on the origin
-static const float coeffE = 0.005;
-static const float idealBondLength = 5;
+GraphNodeParameters::GraphNodeParameters(float g,
+                                          float e,
+                                          float bl,
+                                          float f) {
+  m_gravity = g;
+  m_electrical = e;
+  m_bondLength = bl;
+  m_mu = f;
+}
 
-GraphNode::GraphNode(float radius, sf::Vector2f &origin, sf::RenderWindow &window, 
-	                   float mu, GraphNodeSet * nodes, unsigned int x, unsigned int y) {
+float GraphNodeParameters::grav() { return m_gravity; }
+void GraphNodeParameters::grav(float g) { 
+  if (g > 0) 
+    m_gravity = g; 
+}
+void GraphNodeParameters::incrementGrav() {
+  m_gravity += gravIncrement;
+}
+void GraphNodeParameters::decrementGrav() {
+  if (m_gravity >= gravIncrement) 
+    m_gravity -= gravIncrement;
+}
+
+float GraphNodeParameters::elec() { return m_electrical; }
+void GraphNodeParameters::elect(float e) { 
+  if (e > 0) 
+    m_electrical = e; 
+}
+void GraphNodeParameters::incrementElec() {
+  m_electrical += electricalIncrement;
+}
+void GraphNodeParameters::decrementElec() {
+  if (m_electrical >= electricalIncrement)
+    m_electrical -= electricalIncrement;
+}
+
+float GraphNodeParameters::bondLength() { return m_bondLength; }
+void GraphNodeParameters::bondLength(float bl) { 
+  if (bl > 0) 
+    m_bondLength = bl; 
+}
+void GraphNodeParameters::incrementBondLength() {
+  m_bondLength += bondLengthIncrement;
+}
+void GraphNodeParameters::decrementBondLength() {
+  if (m_bondLength >= bondLengthIncrement)
+    m_bondLength -= bondLengthIncrement;
+}
+
+float GraphNodeParameters::mu() { return m_mu; }
+void GraphNodeParameters::mu(float f) { 
+  if (f >= 0 && f <= 1) 
+    m_mu = f;
+}
+void GraphNodeParameters::incrementMu() {
+  m_mu += muIncrement;
+  if (m_mu > 1) {
+    m_mu = 1;
+  }
+}
+void GraphNodeParameters::decrementMu() {
+  m_mu -= muIncrement;
+  if (m_mu < 0) {
+    m_mu = 0;
+  }
+}
+GraphNode::GraphNode(float radius, 
+                    sf::Vector2f& origin, 
+                    sf::RenderWindow& window, 
+                    GraphNodeParameters& parameters, 
+                    GraphNodeSet * nodes, 
+                    unsigned int x, 
+                    unsigned int y) {
   v = sf::CircleShape(radius);
   w = &window;
   pos = sf::Vector2f(x, y);
-  this->mu = mu;
+  params = &parameters;
   this->origin = &origin;
   gravity = sf::Vector2f(0.f, 0.f);
   electrostatic = sf::Vector2f(0.f, 0.f);
@@ -41,9 +108,10 @@ float GraphNode::gety() {
 }
 
 void GraphNode::calcGravity() {
-  gravity.x =  -coeffG * (getx() - origin->x) / w->getSize().x;
-  gravity.y =  -coeffG * (gety() - origin->y) / w->getSize().y;
-
+  gravity.x = -params->grav() * 
+              (getx() - origin->x) / w->getSize().x;
+  gravity.y = -params->grav() * 
+              (gety() - origin->y) / w->getSize().y;
 }
 
 void GraphNode::calcElectrostatic() {
@@ -59,8 +127,8 @@ void GraphNode::calcElectrostatic() {
       y_dist = (gety() - it->gety()) / w->getSize().y;
       r = sqrt((x_dist * x_dist) + (y_dist * y_dist));
       if (r != 0) {
-        electrostatic.x += coeffE * (x_dist) / r;
-        electrostatic.y += coeffE * (y_dist) / r;
+        electrostatic.x += params->elec() * (x_dist) / r;
+        electrostatic.y += params->elec() * (y_dist) / r;
       }
     }
   }
@@ -76,31 +144,31 @@ void GraphNode::calcBonded() {
     bondLength = 
       pow(getx() - it->getPartnerX(), 2) + 
       pow(gety() - it->getPartnerY(), 2);
-    if (bondLength > idealBondLength) {
+    if (bondLength > params->bondLength()) {
       bonded.x += 
         -1 * it->getStrength() * 
-        (getx() - it->getPartnerX()) / (bondLength - idealBondLength);
+        (getx() - it->getPartnerX()) / (bondLength - params->bondLength());
       bonded.y +=
         -1 * it->getStrength() *
-        (gety() - it->getPartnerY()) / (bondLength - idealBondLength);
-    } else if (bondLength < idealBondLength) {
+        (gety() - it->getPartnerY()) / (bondLength - params->bondLength());
+    } else if (bondLength < params->bondLength()) {
       bonded.x +=
         it->getStrength() *
-        (getx() - it->getPartnerX()) / (bondLength - idealBondLength);
+        (getx() - it->getPartnerX()) / (bondLength - params->bondLength());
       bonded.y +=
         it->getStrength() *
-        (gety() - it->getPartnerY()) / (bondLength - idealBondLength);
+        (gety() - it->getPartnerY()) / (bondLength - params->bondLength());
     }
   }
 }
 
 void GraphNode::calcFriction() {
-  friction.x = -mu * velocity.x;
-  friction.y = -mu * velocity.y;
+  friction.x = -params->mu() * velocity.x;
+  friction.y = -params->mu() * velocity.y;
 }
 
-void GraphNode::addBond(GraphNode * partner, float strength) {
-  bonds.push_back(Bond(partner, strength));
+void GraphNode::addBond(GraphNode& partner, float strength) {
+  bonds.push_back(Bond(&partner, strength));
 }
 
 void GraphNode::updateVelocity(float timestep) {
@@ -108,8 +176,10 @@ void GraphNode::updateVelocity(float timestep) {
   calcElectrostatic();
   calcBonded();
 
-  velocity.x += timestep * w->getSize().x * (gravity.x + electrostatic.x + bonded.x);
-  velocity.y += timestep * w->getSize().y * (gravity.y + electrostatic.y + bonded.y);
+  velocity.x += timestep * w->getSize().x * 
+                (gravity.x + electrostatic.x + bonded.x);
+  velocity.y += timestep * w->getSize().y * 
+                (gravity.y + electrostatic.y + bonded.y);
 
   calcFriction();
   velocity.x += friction.x;

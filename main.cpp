@@ -26,13 +26,14 @@ int main() {
   o.setFillColor(sf::Color::Red);
 
   std::vector<GraphNode> nodeList;
+  GraphNodeParameters params;
 
   for(int i = 0; i < 1000; i++) {
-    nodeList.push_back(GraphNode(3.f, origin, window, 0.1, 
+    nodeList.push_back(GraphNode(3.f, origin, window, params, 
       &nodeList, randomInt() * window.getSize().x / 100, randomInt() * window.getSize().y /100));
     nodeList[i].setFillColor(sf::Color::Blue);
     if (i > 0) {
-      nodeList[i].addBond(&nodeList[i-1], randomInt() / 100.f);
+      nodeList[i].addBond(nodeList[i-1], randomInt() / 100.f);
     }
   }
   /*
@@ -70,6 +71,34 @@ int main() {
     while (window.pollEvent(event)) {
       if (event.type == sf::Event::Closed) {
         goto exit;
+      }
+      if (event.type == sf::Event::KeyPressed) {
+        switch (event.key.code) {
+          case sf::Keyboard::E:
+            params.incrementElec();
+            break;
+          case sf::Keyboard::D:
+            params.decrementElec();
+            break;
+          case sf::Keyboard::Q:
+            params.incrementGrav();
+            break;
+          case sf::Keyboard::A:
+            params.decrementGrav();
+            break;
+          case sf::Keyboard::W:
+            params.incrementBondLength();
+            break;
+          case sf::Keyboard::S:
+            params.decrementBondLength();
+            break;
+          case sf::Keyboard::R:
+            params.incrementMu();
+            break;
+          case sf::Keyboard::F:
+            params.decrementMu();
+            break;
+        }
       }
     }
     window.clear(sf::Color::White);
