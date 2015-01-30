@@ -4,14 +4,17 @@ LDFLAGS=-lsfml-graphics -lsfml-window -lsfml-system
 
 all: dgl
 
-dgl: main.o GraphNode.o Bond.o
-	$(CC) main.o GraphNode.o Bond.o -o dgl $(LDFLAGS)
+dgl: main.o GraphNode.o GraphNodeParameters.o Bond.o
+	$(CC) main.o GraphNode.o GraphNodeParameters.o Bond.o -o dgl $(LDFLAGS)
 
 main.o: main.cpp
 	$(CC) $(CFLAGS) main.cpp
 
 GraphNode.o: GraphNode.cpp
 	$(CC) $(CFLAGS) GraphNode.cpp
+
+GraphNodeParameters.o: GraphNodeParameters.cpp
+	$(CC) $(CFLAGS) GraphNodeParameters.cpp
 
 Bond.o: Bond.cpp
 	$(CC) $(CFLAGS) Bond.cpp

@@ -34,10 +34,10 @@ void GraphNodeParameters::elec(float e) {
   }
 }
 void GraphNodeParameters::incrementElec() {
-  elec(elec() + elecIncrement);
+  elec(elec() + electricalIncrement);
 }
 void GraphNodeParameters::decrementElec() {
-  elec(elec() - elecIncrement);
+  elec(elec() - electricalIncrement);
 }
 
 float GraphNodeParameters::bondLength() { return m_bondLength; }
