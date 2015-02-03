@@ -8,8 +8,8 @@ GraphNode::GraphNode(float radius,
                     sf::RenderWindow& window, 
                     GraphNodeParameters& parameters, 
                     GraphNodeSet * nodes, 
-                    unsigned int x, 
-                    unsigned int y) {
+                    float x, 
+                    float y) {
   v = sf::CircleShape(radius);
   w = &window;
   pos = sf::Vector2f(x, y);
@@ -41,6 +41,10 @@ float GraphNode::gety() {
   return pos.y;
 }
 
+sf::Vector2f& GraphNode::getPos() {
+  return pos;
+}
+
 void GraphNode::calcGravity() {
   gravity.x = -params->grav() * 
               (getx() - origin->x) / w->getSize().x;
@@ -54,11 +58,11 @@ void GraphNode::calcElectrostatic() {
   float r;
   float x_dist;
   float y_dist;
-  GraphNodeSet::iterator it;
-  for (it = nodes->begin(); it != nodes->end(); it++) {
-    if (this != &(*it)) {
-      x_dist = (getx() - it->getx()) / w->getSize().x;
-      y_dist = (gety() - it->gety()) / w->getSize().y;
+  
+  for (auto it = nodes->begin(); it != nodes->end(); it++) {
+    if (this != *it) {
+      x_dist = (getx() - (*it)->getx()) / w->getSize().x;
+      y_dist = (gety() - (*it)->gety()) / w->getSize().y;
       r = sqrt((x_dist * x_dist) + (y_dist * y_dist));
       if (r != 0) {
         electrostatic.x += params->elec() * (x_dist) / r;
@@ -69,30 +73,31 @@ void GraphNode::calcElectrostatic() {
 }
 
 void GraphNode::calcBonded() {
-  std::vector<Bond>::iterator it;
+  std::vector<Bond *>::iterator it;
   float bondLength;
   bonded.x = 0.f;
   bonded.y = 0.f;
-
   for(it = bonds.begin(); it != bonds.end(); it++) {
     bondLength = 
-      pow(getx() - it->getPartnerX(), 2) + 
-      pow(gety() - it->getPartnerY(), 2);
+      pow(getx() - (*it)->getPartnerX(), 2) + 
+      pow(gety() - (*it)->getPartnerY(), 2);
     if (bondLength > params->bondLength()) {
       bonded.x += 
-        -1 * it->getStrength() * 
-        (getx() - it->getPartnerX()) / (bondLength - params->bondLength());
+        1 * (*it)->strength() * 
+        (getx() - (*it)->getPartnerX()) / (bondLength - params->bondLength());
       bonded.y +=
-        -1 * it->getStrength() *
-        (gety() - it->getPartnerY()) / (bondLength - params->bondLength());
+        1 * (*it)->strength() *
+        (gety() - (*it)->getPartnerY()) / (bondLength - params->bondLength());
     } else if (bondLength < params->bondLength()) {
       bonded.x +=
-        it->getStrength() *
-        (getx() - it->getPartnerX()) / (bondLength - params->bondLength());
+        -1 * (*it)->strength() *
+        (getx() - (*it)->getPartnerX()) / (bondLength - params->bondLength());
       bonded.y +=
-        it->getStrength() *
-        (gety() - it->getPartnerY()) / (bondLength - params->bondLength());
+        -1 * (*it)->strength() *
+        (gety() - (*it)->getPartnerY()) / (bondLength - params->bondLength());
     }
+    std::cout << bondLength << std::endl;
+    std::cout << params->bondLength() << std::endl;
   }
 }
 
@@ -102,7 +107,10 @@ void GraphNode::calcFriction() {
 }
 
 void GraphNode::addBond(GraphNode& partner, float strength) {
-  bonds.push_back(Bond(&partner, strength));
+
+  auto b = new Bond(*this, partner, strength, *w);
+  bonds.push_back(b);
+  nodes->addBond(*b);
 }
 
 void GraphNode::updateVelocity(float timestep) {
@@ -130,6 +138,7 @@ void GraphNode::setFillColor(sf::Color color) {
 }
 
 void GraphNode::draw() {
+
   v.setPosition((int)pos.x, (int)pos.y);
   w->draw(v);
 }

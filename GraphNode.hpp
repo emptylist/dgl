@@ -5,11 +5,11 @@
 #include <SFML/System.hpp>
 #include <vector>
 #include "GraphNodeParameters.hpp"
+#include "GraphNodeSet.hpp"
 #include "Bond.hpp"
 
 class Bond;
-class GraphNode;
-typedef std::vector<GraphNode> GraphNodeSet;
+class GraphNodeSet;
 
 class GraphNode {
 private:
@@ -23,7 +23,7 @@ private:
   sf::Vector2f bonded;
   sf::Vector2f friction;
   sf::Vector2f velocity;
-  std::vector<Bond> bonds;
+  std::vector<Bond *> bonds;
   GraphNodeSet * nodes;
 
   void calcGravity();
@@ -33,11 +33,12 @@ private:
 
 public:
   GraphNode(float radus, sf::Vector2f& origin, sf::RenderWindow& w, GraphNodeParameters& params,  
-	    GraphNodeSet * nodes = NULL, unsigned int x = 0, unsigned int y = 0);
+	    GraphNodeSet * nodes = NULL, float x = 0, float y = 0);
   ~GraphNode();
   
   float getx();
   float gety();
+  sf::Vector2f& getPos();
   void addBond(GraphNode& partner, float strength);
   void setFillColor(sf::Color color);
   void updateVelocity(float timestep);

@@ -1,22 +1,36 @@
 #include "Bond.hpp"
+#include <iostream>
 
-Bond::Bond(GraphNode * partner, float strength) {
-	this->partner = partner;
-	this->strength = strength;
+Bond::Bond(GraphNode& origin, 
+		GraphNode& partner, 
+		float strength, 
+		sf::RenderWindow& w):
+		m_strength(strength),
+		m_origin(&origin),
+		m_partner(&partner),
+		m_graphic(new QuadraticBezier(origin.getPos(), partner.getPos(), partner.getPos(), w)) 
+		{}
+
+Bond::~Bond() {
+	delete m_graphic;
 }
 
-float Bond::getStrength() {
-	return strength;
+float Bond::strength() {
+	return m_strength;
 }
 
-GraphNode* Bond::getPartner() {
-	return partner;
+GraphNode& Bond::getPartner() {
+	return *m_partner;
 }
 
 float Bond::getPartnerX() {
-	return partner->getx();
+	return m_partner->getx();
 }
 
 float Bond::getPartnerY() {
-	return partner->gety();
+	return m_partner->gety();
+}
+
+void Bond::draw() {
+	m_graphic->draw();
 }

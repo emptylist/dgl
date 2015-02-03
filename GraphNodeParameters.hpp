@@ -1,3 +1,6 @@
+#ifndef __DGL_GRAPH_NODE_PARAMETERS_H__
+#define __DGL_GRAPH_NODE_PARAMETERS_H__
+
 class GraphNodeParameters {
 private:
 	float m_gravity;
@@ -7,12 +10,12 @@ private:
 	float gravIncrement = 0.2;
 
 	float electricalIncrement = 0.001;
-  float bondLengthIncrement = 0.1;
+  float bondLengthIncrement = 100.f;
   float muIncrement = 0.05;
 
 public:
   GraphNodeParameters(float g = 10.f, float e = 0.005, 
-                      float bl = 5.f, float f = 0.2);
+                      float bl = 500.f, float f = 0.2);
   float grav();
   void grav(float g);
   void incrementGrav();
@@ -33,3 +36,5 @@ public:
   void incrementMu();
   void decrementMu();
 };
+
+#endif
