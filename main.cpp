@@ -32,7 +32,7 @@ int main() {
   GraphNodeParameters params;
   GraphNodeSet nodes(params, window, origin);
   int i;
-  for(i = 0; i < 50; i++) {
+  for(i = 0; i < 1000; i++) {
     nodes.createNode(3.f, (float)(randomInt() * window.getSize().x / 100), (float)(randomInt() * window.getSize().y /100));
     nodes[i].setFillColor(sf::Color::Green);
     if (i > 0) {
@@ -40,7 +40,6 @@ int main() {
       nodes[i-1].addBond(nodes[i], 50);
     }
   }
-  std::cout << nodes << std::endl;
 
   nodes[i-1].addBond(nodes[0], 100);
   nodes[0].addBond(nodes[i-1], 100);
@@ -85,6 +84,7 @@ int main() {
         }
       }
     }
+
     window.clear(sf::Color::Black);
     window.draw(o);
 

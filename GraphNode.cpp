@@ -143,9 +143,9 @@ void GraphNode::draw() {
 
 void GraphNode::writeAsSVG(std::ostream& stream) {
   stream << "\t<circle cx=\""
-         << getx()
+         << (int)v.getPosition().x
          << "\" cy=\""
-         << gety()
+         << (int)v.getPosition().y
          << "\" r=\""
          << v.getRadius()
          << "\" fill=\""

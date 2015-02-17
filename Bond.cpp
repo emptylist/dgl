@@ -35,7 +35,10 @@ void Bond::draw() {
 }
 
 void Bond::writeAsSVG(std::ostream& stream) {
-	
+  stream << "\t<path d=\"M" << (int)m_origin->getx() << " " << (int)m_origin->gety() << " "
+	 << "Q" << (int)m_partner->getx() << ","<< (int)m_origin->gety() << " "
+	 << (int)m_partner->getx() << "," << (int)m_partner->gety() << "\" "
+	 << "fill=\"none\" stroke=\"#888888\" />" << std::endl;
 }
 
 std::ostream& operator<<(std::ostream& stream, const Bond& bond) {
