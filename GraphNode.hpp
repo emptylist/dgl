@@ -7,6 +7,7 @@
 #include "GraphNodeParameters.hpp"
 #include "GraphNodeSet.hpp"
 #include "Bond.hpp"
+#include <iostream>
 
 class Bond;
 class GraphNodeSet;
@@ -31,19 +32,23 @@ private:
   void calcBonded();
   void calcFriction();
 
+  friend std::ostream& operator<<(std::ostream&, const GraphNode&);
+
 public:
   GraphNode(float radus, sf::Vector2f& origin, sf::RenderWindow& w, GraphNodeParameters& params,  
 	    GraphNodeSet * nodes = NULL, float x = 0, float y = 0);
   ~GraphNode();
   
-  float getx();
-  float gety();
+  float getx() const;
+  float gety() const;
   sf::Vector2f& getPos();
   void addBond(GraphNode& partner, float strength);
   void setFillColor(sf::Color color);
   void updateVelocity(float timestep);
   void updatePosition(float timestep);
   void draw();
+  void writeAsSVG(std::ostream&);
 };
+
 
 #endif

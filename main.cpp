@@ -2,6 +2,7 @@
 #include <random>
 #include <chrono>
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include "GraphNode.hpp"
 #include "GraphNodeSet.hpp"
@@ -9,6 +10,8 @@
 static const float ts = 0.05;
 
 int main() {
+  std::ofstream f;
+  f.open("test.xdgl");
   sf::VideoMode vm;
   sf::RenderWindow window(vm.getDesktopMode(), "Directed Graph Layout Tool");
   window.setVerticalSyncEnabled(true);
@@ -28,19 +31,19 @@ int main() {
 
   GraphNodeParameters params;
   GraphNodeSet nodes(params, window, origin);
-
-  for(int i = 0; i < 3; i++) {
-    std::cout << "Constructing Node: " << i << std::endl;
+  int i;
+  for(i = 0; i < 50; i++) {
     nodes.createNode(3.f, (float)(randomInt() * window.getSize().x / 100), (float)(randomInt() * window.getSize().y /100));
-    nodes[i].setFillColor(sf::Color::Blue);
+    nodes[i].setFillColor(sf::Color::Green);
     if (i > 0) {
       nodes[i].addBond(nodes[i-1], 50);
       nodes[i-1].addBond(nodes[i], 50);
     }
   }
+  std::cout << nodes << std::endl;
 
-  nodes[2].addBond(nodes[0], 100);
-  nodes[0].addBond(nodes[2], 100);
+  nodes[i-1].addBond(nodes[0], 100);
+  nodes[0].addBond(nodes[i-1], 100);
 
   while (window.isOpen()) {
     while (window.pollEvent(event)) {
@@ -73,12 +76,16 @@ int main() {
           case sf::Keyboard::F:
             params.decrementMu();
             break;
+          case sf::Keyboard::T:
+            f.seekp(0);
+            nodes.writeAsSVG(f);
+            break;
           default:
             break;
         }
       }
     }
-    window.clear(sf::Color::White);
+    window.clear(sf::Color::Black);
     window.draw(o);
 
     nodes.update(ts);
@@ -89,6 +96,7 @@ int main() {
 
   exit:
   window.close();
+  f.close();
   return 0;
 
 }

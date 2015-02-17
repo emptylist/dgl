@@ -3,6 +3,7 @@
 
 #include "GraphNode.hpp"
 #include "Bezier.hpp"
+#include <iostream>
 
 class GraphNode;
 
@@ -12,6 +13,7 @@ private:
 	GraphNode * m_origin;
 	GraphNode * m_partner;
 	QuadraticBezier * m_graphic;
+	friend std::ostream& operator<<(std::ostream&, const Bond&);
 
 public:
 	Bond(GraphNode& origin, 
@@ -24,6 +26,7 @@ public:
 	float getPartnerX();
 	float getPartnerY();
 	void draw();
+	void writeAsSVG(std::ostream&);
 };
 
 #endif

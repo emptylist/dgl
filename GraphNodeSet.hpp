@@ -1,8 +1,9 @@
 #ifndef __DGL_GRAPH_NODE_SET_H__
 #define __DGL_GRAPH_NODE_SET_H__
 
-#include <vector>
 #include <cstddef>
+#include <vector>
+#include <iostream>
 #include "GraphNode.hpp"
 #include "GraphNodeParameters.hpp"
 #include "Bond.hpp"
@@ -19,6 +20,7 @@ private:
 	sf::Vector2f origin;
 
 	GraphNodeSet();
+	friend std::ostream& operator<<(std::ostream&, const GraphNodeSet&);
 public:
 	GraphNodeSet(GraphNodeParameters&, sf::RenderWindow&, sf::Vector2f&);
 	void createNode(float r, float x = 0.f, float y = 0.f);
@@ -28,6 +30,7 @@ public:
 	std::vector<GraphNode *>::iterator begin();
 	std::vector<GraphNode *>::iterator end();
 	GraphNode& operator[](std::size_t);
+	void writeAsSVG(std::ostream&);
 };
 
 #endif

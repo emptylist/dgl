@@ -1,5 +1,4 @@
 #include "Bond.hpp"
-#include <iostream>
 
 Bond::Bond(GraphNode& origin, 
 		GraphNode& partner, 
@@ -33,4 +32,13 @@ float Bond::getPartnerY() {
 
 void Bond::draw() {
 	m_graphic->draw();
+}
+
+void Bond::writeAsSVG(std::ostream& stream) {
+	
+}
+
+std::ostream& operator<<(std::ostream& stream, const Bond& bond) {
+	stream << "\t\t <bond partner=" << bond.m_partner << " />" << std::endl;
+	return stream;
 }

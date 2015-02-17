@@ -9,7 +9,7 @@ QuadraticBezier::QuadraticBezier(sf::Vector2f& s,
 								  m_start(&s),
 								  m_control(&c),
 								  m_end(&e),
-							  	polyline(new sf::VertexArray(sf::LinesStrip, 41))
+							  	polyline(new sf::VertexArray(sf::LinesStrip, 81))
 								  {
 								  	m_control = new sf::Vector2f(s.y, e.x);
 								  }
@@ -25,7 +25,7 @@ void QuadraticBezier::computePolyline() {
 		p0 = (1 - t) * *m_start + t * *m_control;
 		p1 = (1 - t) * *m_control + t * *m_end;
 		(*polyline)[i].position = (1 - t) * p0 + t * p1;
-		(*polyline)[i].color = sf::Color::Black;
+		(*polyline)[i].color = sf::Color::White;
 	}
 	cached = false;
 }

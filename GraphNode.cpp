@@ -33,11 +33,11 @@ GraphNode::~GraphNode() {
   */
 }
 
-float GraphNode::getx() {
+float GraphNode::getx() const {
   return pos.x;
 }
 
-float GraphNode::gety() {
+float GraphNode::gety() const {
   return pos.y;
 }
 
@@ -96,8 +96,6 @@ void GraphNode::calcBonded() {
         -1 * (*it)->strength() *
         (gety() - (*it)->getPartnerY()) / (bondLength - params->bondLength());
     }
-    std::cout << bondLength << std::endl;
-    std::cout << params->bondLength() << std::endl;
   }
 }
 
@@ -141,4 +139,33 @@ void GraphNode::draw() {
 
   v.setPosition((int)pos.x, (int)pos.y);
   w->draw(v);
+}
+
+void GraphNode::writeAsSVG(std::ostream& stream) {
+  stream << "\t<circle cx=\""
+         << getx()
+         << "\" cy=\""
+         << gety()
+         << "\" r=\""
+         << v.getRadius()
+         << "\" fill=\""
+         << "green"
+         << "\"/>"
+         << std::endl;
+}
+
+std::ostream& operator<<(std::ostream& stream, const GraphNode& node) {
+  stream << "\t<node id="
+        << &node
+        << " x=" 
+        << node.getx() 
+        << " y=" 
+        << node.gety() 
+        << ">"
+        << std::endl;
+  for (auto it = node.bonds.begin(); it != node.bonds.end(); it++) {
+    stream << **it;
+  }
+  stream << "\t</node>" << std::endl;
+  return stream;
 }

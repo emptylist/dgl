@@ -57,7 +57,7 @@ void GraphNodeParameters::decrementBondLength() {
 
 float GraphNodeParameters::mu() { return m_mu; }
 void GraphNodeParameters::mu(float f) {
-  if (f > 0 && f < 1) {
+  if ((f > 0) && (f < 1)) {
     m_mu = f;
   } else {
     if (f < 0) {
