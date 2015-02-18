@@ -77,7 +77,7 @@ int main() {
             break;
           case sf::Keyboard::T:
             f.seekp(0);
-            nodes.writeAsSVG(f);
+            f << nodes;
             break;
           default:
             break;

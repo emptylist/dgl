@@ -155,17 +155,14 @@ void GraphNode::writeAsSVG(std::ostream& stream) {
 }
 
 std::ostream& operator<<(std::ostream& stream, const GraphNode& node) {
-  stream << "\t<node id="
-        << &node
-        << " x=" 
-        << node.getx() 
-        << " y=" 
-        << node.gety() 
-        << ">"
-        << std::endl;
-  for (auto it = node.bonds.begin(); it != node.bonds.end(); it++) {
-    stream << **it;
-  }
-  stream << "\t</node>" << std::endl;
+  stream << "node id "
+	 << &node
+	 << " x " 
+	 << node.getx() 
+	 << " y " 
+	 << node.gety() 
+	 << " r "
+	 << node.v.getRadius()
+	 << std::endl;
   return stream;
 }

@@ -42,6 +42,10 @@ void Bond::writeAsSVG(std::ostream& stream) {
 }
 
 std::ostream& operator<<(std::ostream& stream, const Bond& bond) {
-	stream << "\t\t <bond partner=" << bond.m_partner << " />" << std::endl;
-	return stream;
+  stream << "bond"
+	 << " origin " << bond.m_origin
+	 << " partner " << bond.m_partner
+	 << " strength " << bond.m_strength
+	 << std::endl;
+  return stream;
 }
