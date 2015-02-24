@@ -37,8 +37,8 @@ void Bond::draw() {
   float y1 = m_origin->gety();
   float x2 = m_partner->getx();
   float y2 = m_partner->gety();
-  m_control->x = ((y1 - y2) / 2) + ((x1 + x2) / 2);
-  m_control->y = x1 - ((x1 + x2) / 2) + ((y1 + y2) / 2);
+  m_control->x = ((y2 - y1) / 2) + ((x1 + x2) / 2);
+  m_control->y = (x1 - ((x1 + x2) / 2)) + ((y1 + y2) / 2);
   m_graphic->draw();
 }
 
