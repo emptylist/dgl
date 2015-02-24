@@ -4,8 +4,8 @@ LDFLAGS=-lsfml-graphics -lsfml-window -lsfml-system
 
 all: dgl
 
-dgl: main.o GraphNode.o GraphNodeParameters.o GraphNodeSet.o Bezier.o Bond.o
-	$(CC) main.o GraphNode.o GraphNodeParameters.o GraphNodeSet.o Bezier.o Bond.o -o dgl $(LDFLAGS)
+dgl: main.o GraphNode.o GraphNodeParameters.o GraphNodeSet.o Bezier.o Bond.o DGLLoader.o
+	$(CC) main.o GraphNode.o GraphNodeParameters.o GraphNodeSet.o Bezier.o Bond.o DGLLoader.o -o dgl $(LDFLAGS)
 
 main.o: main.cpp
 	$(CC) $(CFLAGS) main.cpp
@@ -24,6 +24,9 @@ Bezier.o: Bezier.cpp
 
 Bond.o: Bond.cpp
 	$(CC) $(CFLAGS) Bond.cpp
+
+DGLLoader.o: DGLLoader.cpp
+	$(CC) $(CFLAGS) DGLLoader.cpp
 
 clean:
 	rm -rf *o dgl

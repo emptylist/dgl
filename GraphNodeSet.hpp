@@ -21,6 +21,7 @@ private:
 
 	GraphNodeSet();
 	friend std::ostream& operator<<(std::ostream&, const GraphNodeSet&);
+
 public:
 	GraphNodeSet(GraphNodeParameters&, sf::RenderWindow&, sf::Vector2f&);
 	void createNode(float r, float x = 0.f, float y = 0.f);
@@ -31,6 +32,7 @@ public:
 	std::vector<GraphNode *>::iterator end();
 	GraphNode& operator[](std::size_t);
 	void writeAsSVG(std::ostream&);
+	GraphNodeParameters& params() { return *parameters; };
 };
 
 #endif

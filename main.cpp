@@ -6,6 +6,7 @@
 #include <vector>
 #include "GraphNode.hpp"
 #include "GraphNodeSet.hpp"
+#include "DGLLoader.hpp"
 
 static const float ts = 0.05;
 
@@ -28,7 +29,10 @@ int main() {
   sf::CircleShape o(5.f);
   o.setPosition(origin.x, origin.y);
   o.setFillColor(sf::Color::Red);
-
+  std::ifstream infile("inTest.dgl");
+  DGLLoader loader = loadDGL(infile, window, origin);
+  GraphNodeSet * graph = loader.generateGraph(window, origin);
+  /*
   GraphNodeParameters params;
   GraphNodeSet nodes(params, window, origin);
   int i;
@@ -43,7 +47,7 @@ int main() {
 
   nodes[i-1].addBond(nodes[0], 100);
   nodes[0].addBond(nodes[i-1], 100);
-
+  */
   while (window.isOpen()) {
     while (window.pollEvent(event)) {
       if (event.type == sf::Event::Closed) {
@@ -52,32 +56,32 @@ int main() {
       if (event.type == sf::Event::KeyPressed) {
         switch (event.key.code) {
           case sf::Keyboard::E:
-            params.incrementElec();
+            graph->params().incrementElec();
             break;
           case sf::Keyboard::D:
-            params.decrementElec();
+            graph->params().decrementElec();
             break;
           case sf::Keyboard::Q:
-            params.incrementGrav();
+            graph->params().incrementGrav();
             break;
           case sf::Keyboard::A:
-            params.decrementGrav();
+            graph->params().decrementGrav();
             break;
           case sf::Keyboard::W:
-            params.incrementBondLength();
+            graph->params().incrementBondLength();
             break;
           case sf::Keyboard::S:
-            params.decrementBondLength();
+            graph->params().decrementBondLength();
             break;
           case sf::Keyboard::R:
-            params.incrementMu();
+            graph->params().incrementMu();
             break;
           case sf::Keyboard::F:
-            params.decrementMu();
+            graph->params().decrementMu();
             break;
           case sf::Keyboard::T:
             f.seekp(0);
-            f << nodes;
+            graph->writeAsSVG(f);
             break;
           default:
             break;
@@ -88,9 +92,8 @@ int main() {
     window.clear(sf::Color::Black);
     window.draw(o);
 
-    nodes.update(ts);
-    nodes.draw();
-
+    graph->update(ts);
+    graph->draw();
     window.display();
   }
 

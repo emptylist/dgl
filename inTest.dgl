@@ -1,0 +1,10 @@
+parameters
+node id A r 3 x 500 y 600
+node id B r 5 x 200 y 400
+node id C r 2 x 800 y 700
+node id D r 4 x 200 y 700
+bond origin A partner B strength 1
+bond origin A partner C strength 1
+bond origin A partner D strength 1
+bond origin B partner C strength 1
+bond origin C partner D strength 1
