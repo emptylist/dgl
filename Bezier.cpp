@@ -21,7 +21,7 @@ void QuadraticBezier::computePolyline() {
     p0 = (1 - t) * *m_start + t * *m_control;
     p1 = (1 - t) * *m_control + t * *m_end;
     (*polyline)[i].position = (1 - t) * p0 + t * p1;
-    (*polyline)[i].color = sf::Color::White;
+    (*polyline)[i].color = sf::Color(0x88, 0x88, 0x88);
   }
   cached = false;
 }

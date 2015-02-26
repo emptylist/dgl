@@ -21,6 +21,7 @@ GraphNode::GraphNode(float radius,
   friction = sf::Vector2f(0.f, 0.f);
   velocity = sf::Vector2f(0.f, 0.f);
   this->nodes = nodes;
+  v.setFillColor(sf::Color(0x00, 0x66, 0x00));
 }
 
 GraphNode::~GraphNode() {
@@ -83,17 +84,17 @@ void GraphNode::calcBonded() {
       pow(gety() - (*it)->getPartnerY(), 2);
     if (bondLength > params->bondLength()) {
       bonded.x += 
-        1 * (*it)->strength() * 
+        1 * (*it)->strength() * 10000 * 
         (getx() - (*it)->getPartnerX()) / (bondLength - params->bondLength());
       bonded.y +=
-        1 * (*it)->strength() *
+        1 * (*it)->strength() * 10000 *
         (gety() - (*it)->getPartnerY()) / (bondLength - params->bondLength());
     } else if (bondLength < params->bondLength()) {
       bonded.x +=
-        -1 * (*it)->strength() *
+        -1 * (*it)->strength() * 10000 *
         (getx() - (*it)->getPartnerX()) / (bondLength - params->bondLength());
       bonded.y +=
-        -1 * (*it)->strength() *
+        -1 * (*it)->strength() * 10000 *
         (gety() - (*it)->getPartnerY()) / (bondLength - params->bondLength());
     }
   }

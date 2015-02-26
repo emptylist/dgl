@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <cmath>
+#include <chrono>
 #include "GraphNode.hpp"
 #include "Bond.hpp"
 
@@ -193,6 +194,12 @@ bool DGLLoader::validate() {
 }
 
 GraphNodeSet * DGLLoader::generateGraph(sf::RenderWindow& window, sf::Vector2f& origin) {
+  auto now = std::chrono::system_clock::now();
+  std::default_random_engine generator;
+  generator.seed(now.time_since_epoch().count());
+  std::uniform_int_distribution<int> distribution(0,100);
+  auto randomInt = std::bind(distribution, generator);
+
   GraphNodeParameters * params = new GraphNodeParameters();
   if (!isnan(parameters.g())) { params->grav(parameters.g()); }
   if (!isnan(parameters.e())) { params->elec(parameters.e()); }
@@ -201,8 +208,8 @@ GraphNodeSet * DGLLoader::generateGraph(sf::RenderWindow& window, sf::Vector2f& 
   GraphNodeSet * graph = new GraphNodeSet(*params, window, origin);
   for (auto it = nodeList.begin(); it != nodeList.end(); it++) {
     graph->createNode(isnan(it->r()) ? 3.f : it->r(),
-                      isnan(it->x()) ? window.getSize().x / 2 : it->x(),
-                      isnan(it->y()) ? window.getSize().y / 2 : it->y());
+                      isnan(it->x()) ? ((float)randomInt() / 100) * window.getSize().x : it->x(),
+		      isnan(it->y()) ? ((float)randomInt() / 100) * window.getSize().y / 2 : it->y());
   }
   for (auto it = bondList.begin(); it != bondList.end(); it++) {
     size_t nodeLoc1 = 0;

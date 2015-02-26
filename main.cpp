@@ -29,7 +29,7 @@ int main() {
   sf::CircleShape o(5.f);
   o.setPosition(origin.x, origin.y);
   o.setFillColor(sf::Color::Red);
-  std::ifstream infile("inTest.dgl");
+  std::ifstream infile("testconvert.dgl");
   DGLLoader loader = loadDGL(infile, window, origin);
   GraphNodeSet * graph = loader.generateGraph(window, origin);
   /*
@@ -89,7 +89,7 @@ int main() {
       }
     }
 
-    window.clear(sf::Color::Black);
+    window.clear(sf::Color::White);
     window.draw(o);
 
     graph->update(ts);
@@ -97,9 +97,9 @@ int main() {
     window.display();
   }
 
-  exit:
+ exit:
   window.close();
   f.close();
   return 0;
-
+  
 }
